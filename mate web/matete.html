@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Real Mates - Carrusel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(#f9f7f0, #d5e5c0);
+            color: #123d1b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        .title {
+            font-size: 3em;
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .carousel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
+            touch-action: pan-y;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-item img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #123d1b;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .arrow.left {
+            left: 10px;
+        }
+
+        .arrow.right {
+            right: 10px;
+        }
+
+        .description {
+            font-size: 1.2em;
+            margin: 15px 20px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .buy-button {
+            margin: 20px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #123d1b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .buy-button:hover {
+            background-color: #2a5d32;
+        }
+
+        .changing-text {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 20px;
+            color: #123d1b;
+            text-align: center;
+            animation: fade 0.5s ease-in-out;
+        }
+
+        @keyframes fade {
+            from { opacity: 0.2; }
+            to { opacity: 1; }
+        }
+
+        .footer {
+            background-color: #123d1b;
+            color: white;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+        }
+
+        .idear-section, .mates-section, .verde-section, .qr-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+        }
+
+        .idear-section {
+            background-color: #3a1f0d;
+        }
+
+        .idear-section img {
+            max-width: 90%;
+            height: auto;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .mates-section img, .verde-section img, .qr-section img {
+            max-width: 90%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title" id="carouselTitle">Real Mates - Clásico</div>
+
+    <div class="description" id="carouselDescription">
+        Un mate tradicional argentino con sabor intenso y aroma a campo.
+    </div>
+
+    <div class="carousel" id="carousel">
+        <button class="arrow left" onclick="prevSlide()">&#8592;</button>
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-item">
+                <img src="43867c5e-cf59-4cb8-a389-47b44e431268.png" alt="Mate 3" />
+            </div>
+            <div class="carousel-item">
+                <img src="43867c5e-cf59-4cb8-a389-47b44e431268.png" alt="Mate 1" />
+            </div>
+            <div class="carousel-item">
+                <img src="43867c5e-cf59-4cb8-a389-47b44e431268.png" alt="Mate 2" />
+            </div>
+        </div>
+        <button class="arrow right" onclick="nextSlide()">&#8594;</button>
+    </div>
+
+    <button class="buy-button">Comprar</button>
+
+    <div class="changing-text" id="changingText">amor</div>
+
+    <div class="footer">
+        COMPARTIR &middot; PAZ &middot; FAMILIA
+    </div>
+
+    <div class="idear-section">
+        <img src="idear.png" alt="#idear">
+    </div>
+
+    <!-- Nueva Seccion: Mates -->
+    <div class="mates-section">
+        <img src="mates.png" alt="Mates">
+    </div>
+
+    <!-- Nueva Seccion: Mate Verde -->
+    <div class="verde-section">
+        <img src="mateverde.png" alt="Mate Verde">
+    </div>
+
+    <!-- Nueva Seccion: QR Instagram -->
+    <div class="qr-section">
+        <img src="dievolut_qr.png" alt="Instagram QR">
+    </div>
+
+    <script>
+        const words = ["amor", "perdon", "gloria", "work", "time", "matrix", "gamma", "cambio"];
+        let wordIndex = 0;
+
+        setInterval(() => {
+            wordIndex = (wordIndex + 1) % words.length;
+            document.getElementById("changingText").textContent = words[wordIndex];
+        }, 500);
+
+        const titles = [
+            "Real Mates - Clásico",
+            "Real Mates - Premium",
+            "Real Mates - Edición Limitada"
+        ];
+
+        const descriptions = [
+            "Un mate tradicional argentino con sabor intenso y aroma a campo.",
+            "Mate premium elaborado con materiales de alta calidad para una experiencia única.",
+            "Edición limitada con diseños exclusivos y detalles artesanales."
+        ];
+
+        let currentIndex = 1; // empieza con el mate del medio
+
+        function updateCarousel() {
+            const track = document.getElementById("carouselTrack");
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            document.getElementById("carouselTitle").textContent = titles[currentIndex];
+            document.getElementById("carouselDescription").textContent = descriptions[currentIndex];
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + titles.length) % titles.length;
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % titles.length;
+            updateCarousel();
+        }
+
+        // Swipe Support
+        let startX = 0;
+
+        const carousel = document.getElementById("carousel");
+
+        carousel.addEventListener("touchstart", function(e) {
+            startX = e.touches[0].clientX;
+        });
+
+        carousel.addEventListener("touchend", function(e) {
+            const endX = e.changedTouches[0].clientX;
+            const diff = endX - startX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    prevSlide();
+                } else {
+                    nextSlide();
+                }
+            }
+        });
+
+        // Inicializa
+        updateCarousel();
+    </script>
+</body>
+</html>
