@@ -1,268 +1,434 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Real Mates - Carrusel</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Georgia', serif;
-            background: linear-gradient(#f9f7f0, #d5e5c0);
-            color: #123d1b;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Punto 60°</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --accent: #22d3ee;
+      --accent-2: #a78bfa;
+      --danger: #f97316;
+      --muted: #cbd5e1;
+    }
 
-        .title {
-            font-size: 3em;
-            margin-top: 20px;
-            font-style: italic;
-            text-align: center;
-        }
+    * { box-sizing: border-box; }
 
-        .carousel {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            overflow: hidden;
-            width: 100%;
-            touch-action: pan-y;
-        }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 20% 20%, #1e293b, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
 
-        .carousel-track {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
+    .app {
+      width: min(980px, 100%);
+      display: grid;
+      gap: 16px;
+    }
 
-        .carousel-item {
-            flex: 0 0 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.6vw, 2.3rem);
+      font-weight: 800;
+    }
 
-        .carousel-item img {
-            max-width: 100%;
-            height: auto;
-            max-height: 400px;
-            object-fit: contain;
-            padding: 10px;
-        }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.4;
+    }
 
-        .arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #123d1b;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 10;
-        }
+    .panel {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
 
-        .arrow.left {
-            left: 10px;
-        }
+    canvas {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      display: block;
+    }
 
-        .arrow.right {
-            right: 10px;
-        }
+    .controls,
+    .speed-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
 
-        .description {
-            font-size: 1.2em;
-            margin: 15px 20px;
-            text-align: center;
-            max-width: 600px;
-        }
+    button,
+    input[type="range"] {
+      width: 100%;
+    }
 
-        .buy-button {
-            margin: 20px;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background-color: #123d1b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    button {
+      background: #0b1220;
+      color: var(--text);
+      border: 1px solid #475569;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
 
-        .buy-button:hover {
-            background-color: #2a5d32;
-        }
+    button:hover { border-color: var(--accent); }
+    button:active { transform: translateY(1px); }
 
-        .changing-text {
-            font-size: 4em;
-            font-weight: bold;
-            margin: 20px 20px;
-            color: #123d1b;
-            text-align: center;
-            animation: fade 0.5s ease-in-out;
-        }
+    .primary { border-color: var(--accent); }
+    .warn { border-color: var(--danger); }
 
-        @keyframes fade {
-            from { opacity: 0.2; }
-            to { opacity: 1; }
-        }
+    .time-controls {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+    }
 
-        .footer {
-            background-color: #123d1b;
-            color: white;
-            padding: 15px 0;
-            width: 100%;
-            text-align: center;
-            font-size: 1.2em;
-            letter-spacing: 2px;
-        }
+    .range-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .95rem;
+      color: var(--muted);
+    }
 
-        .idear-section, .mates-section, .verde-section, .qr-section {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px 0;
-        }
+    .hint {
+      font-size: .85rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
 
-        .idear-section {
-            background-color: #3a1f0d;
-        }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      font-size: .95rem;
+      color: var(--muted);
+    }
 
-        .idear-section img {
-            max-width: 90%;
-            height: auto;
-            object-fit: contain;
-            padding: 10px;
-        }
-
-        .mates-section img, .verde-section img, .qr-section img {
-            max-width: 90%;
-            height: auto;
-        }
-    </style>
+    .chip {
+      background: rgba(15, 23, 42, .82);
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+  </style>
 </head>
 <body>
+  <main class="app">
+    <header>
+      <h1>Punto errante (solo giros de ±60°)</h1>
+      <p>
+        El personaje es un punto circular que avanza y, en cada paso, elige aleatoriamente
+        girar 60° a la izquierda o 60° a la derecha.
+      </p>
+    </header>
 
-    <div class="title" id="carouselTitle">Real Mates - Clásico</div>
+    <section class="panel">
+      <canvas id="world" width="920" height="690" aria-label="Simulación de movimiento"></canvas>
 
-    <div class="description" id="carouselDescription">
-        Un mate tradicional argentino con sabor intenso y aroma a campo.
-    </div>
+      <div class="controls">
+        <button id="toggleRun" class="primary">Pausar</button>
+        <button id="continueFromHere">▶ Seguir desde este paso</button>
+        <button id="stepBack">⏪ Retroceder 1 paso</button>
+        <button id="stepForward">⏩ Avanzar 1 paso</button>
+        <button id="reset" class="warn">Reiniciar</button>
+      </div>
 
-    <div class="carousel" id="carousel">
-        <button class="arrow left" onclick="prevSlide()">&#8592;</button>
-        <div class="carousel-track" id="carouselTrack">
-            <div class="carousel-item">
-                <img src="43867c5e-cf59-4cb8-a389-47b44e431268.png" alt="Mate 3" />
-            </div>
-            <div class="carousel-item">
-                <img src="43867c5e-cf59-4cb8-a389-47b44e431268.png" alt="Mate 1" />
-            </div>
-            <div class="carousel-item">
-                <img src="43867c5e-cf59-4cb8-a389-47b44e431268.png" alt="Mate 2" />
-            </div>
+      <div class="time-controls">
+        <div class="range-label">
+          <span>Velocidad</span>
+          <strong id="speedValue">8 pasos/seg</strong>
         </div>
-        <button class="arrow right" onclick="nextSlide()">&#8594;</button>
-    </div>
+        <input id="speed" type="range" min="1" max="40" value="8" />
+        <div class="speed-buttons">
+          <button id="slowDown">- Reducir velocidad</button>
+          <button id="speedUp">+ Aumentar velocidad</button>
+        </div>
+      </div>
 
-    <button class="buy-button">Comprar</button>
+      <div class="time-controls">
+        <div class="range-label">
+          <span>Viaje en el tiempo</span>
+          <strong id="timeValue">Paso 0</strong>
+        </div>
+        <input id="time" type="range" min="0" max="0" value="0" />
+        <div class="hint">Mover este control pausa la simulación para explorar el historial.</div>
+      </div>
 
-    <div class="changing-text" id="changingText">amor</div>
+      <div class="stats">
+        <div class="chip" id="angleStat">Ángulo actual: 0°</div>
+        <div class="chip" id="turnStat">Último giro: —</div>
+        <div class="chip" id="pathStat">Longitud del historial: 1</div>
+      </div>
+    </section>
+  </main>
 
-    <div class="footer">
-        COMPARTIR &middot; PAZ &middot; FAMILIA
-    </div>
+  <script>
+    const canvas = document.getElementById('world');
+    const ctx = canvas.getContext('2d');
 
-    <div class="idear-section">
-        <img src="idear.png" alt="#idear">
-    </div>
+    const toggleRunBtn = document.getElementById('toggleRun');
+    const continueFromHereBtn = document.getElementById('continueFromHere');
+    const stepBackBtn = document.getElementById('stepBack');
+    const stepForwardBtn = document.getElementById('stepForward');
+    const resetBtn = document.getElementById('reset');
 
-    <!-- Nueva Seccion: Mates -->
-    <div class="mates-section">
-        <img src="mates.png" alt="Mates">
-    </div>
+    const speedInput = document.getElementById('speed');
+    const speedValue = document.getElementById('speedValue');
+    const slowDownBtn = document.getElementById('slowDown');
+    const speedUpBtn = document.getElementById('speedUp');
 
-    <!-- Nueva Seccion: Mate Verde -->
-    <div class="verde-section">
-        <img src="mateverde.png" alt="Mate Verde">
-    </div>
+    const timeInput = document.getElementById('time');
+    const timeValue = document.getElementById('timeValue');
 
-    <!-- Nueva Seccion: QR Instagram -->
-    <div class="qr-section">
-        <img src="dievolut_qr.png" alt="Instagram QR">
-    </div>
+    const angleStat = document.getElementById('angleStat');
+    const turnStat = document.getElementById('turnStat');
+    const pathStat = document.getElementById('pathStat');
 
-    <script>
-        const words = ["amor", "perdon", "gloria", "work", "time", "matrix", "gamma", "cambio"];
-        let wordIndex = 0;
+    const STEP_DISTANCE = 10;
+    const TURN_DEGREES = 60;
+    const SPEED_MIN = 1;
+    const SPEED_MAX = 40;
 
-        setInterval(() => {
-            wordIndex = (wordIndex + 1) % words.length;
-            document.getElementById("changingText").textContent = words[wordIndex];
-        }, 500);
+    let running = true;
+    let speed = Number(speedInput.value);
+    let accumulator = 0;
+    let lastFrame = performance.now();
 
-        const titles = [
-            "Real Mates - Clásico",
-            "Real Mates - Premium",
-            "Real Mates - Edición Limitada"
-        ];
+    const state = {
+      history: [{
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        angle: 0,
+        turn: null
+      }],
+      timelineIndex: 0
+    };
 
-        const descriptions = [
-            "Un mate tradicional argentino con sabor intenso y aroma a campo.",
-            "Mate premium elaborado con materiales de alta calidad para una experiencia única.",
-            "Edición limitada con diseños exclusivos y detalles artesanales."
-        ];
+    function degToRad(deg) {
+      return (deg * Math.PI) / 180;
+    }
 
-        let currentIndex = 1; // empieza con el mate del medio
+    function setRunning(nextRunning) {
+      running = nextRunning;
+      toggleRunBtn.textContent = running ? 'Pausar' : 'Reanudar';
+    }
 
-        function updateCarousel() {
-            const track = document.getElementById("carouselTrack");
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    function setSpeed(nextSpeed) {
+      speed = Math.max(SPEED_MIN, Math.min(SPEED_MAX, nextSpeed));
+      speedInput.value = String(speed);
+      speedValue.textContent = `${speed} pasos/seg`;
+    }
 
-            document.getElementById("carouselTitle").textContent = titles[currentIndex];
-            document.getElementById("carouselDescription").textContent = descriptions[currentIndex];
+    function clampTimeline() {
+      timeInput.max = String(state.history.length - 1);
+      if (state.timelineIndex > state.history.length - 1) {
+        state.timelineIndex = state.history.length - 1;
+      }
+      timeInput.value = String(state.timelineIndex);
+      timeValue.textContent = `Paso ${state.timelineIndex}`;
+    }
+
+    function updateStats() {
+      const current = state.history[state.timelineIndex];
+      const normalized = ((current.angle % 360) + 360) % 360;
+      angleStat.textContent = `Ángulo actual: ${normalized.toFixed(0)}°`;
+      turnStat.textContent = `Último giro: ${current.turn ?? '—'}`;
+      pathStat.textContent = `Longitud del historial: ${state.history.length}`;
+      speedValue.textContent = `${speed} pasos/seg`;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const points = state.history.slice(0, state.timelineIndex + 1);
+
+      if (points.length > 1) {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i += 1) {
+          ctx.lineTo(points[i].x, points[i].y);
         }
+        ctx.strokeStyle = 'rgba(34, 211, 238, 0.65)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
 
-        function prevSlide() {
-            currentIndex = (currentIndex - 1 + titles.length) % titles.length;
-            updateCarousel();
+      const current = points[points.length - 1];
+
+      ctx.beginPath();
+      ctx.arc(current.x, current.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#a78bfa';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      const headX = current.x + Math.cos(degToRad(current.angle)) * 18;
+      const headY = current.y + Math.sin(degToRad(current.angle)) * 18;
+      ctx.beginPath();
+      ctx.moveTo(current.x, current.y);
+      ctx.lineTo(headX, headY);
+      ctx.strokeStyle = '#f8fafc';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function keepInBounds(x, y) {
+      const margin = 12;
+      return {
+        x: Math.max(margin, Math.min(canvas.width - margin, x)),
+        y: Math.max(margin, Math.min(canvas.height - margin, y))
+      };
+    }
+
+    function dropFutureIfNeeded() {
+      if (state.timelineIndex < state.history.length - 1) {
+        state.history = state.history.slice(0, state.timelineIndex + 1);
+      }
+    }
+
+    function advanceOneRandomStep() {
+      dropFutureIfNeeded();
+
+      const prev = state.history[state.history.length - 1];
+      const turn = Math.random() < 0.5 ? -TURN_DEGREES : TURN_DEGREES;
+      const newAngle = prev.angle + turn;
+
+      const x = prev.x + Math.cos(degToRad(newAngle)) * STEP_DISTANCE;
+      const y = prev.y + Math.sin(degToRad(newAngle)) * STEP_DISTANCE;
+      const bounded = keepInBounds(x, y);
+
+      state.history.push({
+        x: bounded.x,
+        y: bounded.y,
+        angle: newAngle,
+        turn: turn < 0 ? 'Izquierda (-60°)' : 'Derecha (+60°)'
+      });
+
+      state.timelineIndex = state.history.length - 1;
+      clampTimeline();
+      updateStats();
+      draw();
+    }
+
+    function stepBack() {
+      if (state.timelineIndex > 0) {
+        setRunning(false);
+        state.timelineIndex -= 1;
+        clampTimeline();
+        updateStats();
+        draw();
+      }
+    }
+
+    function stepForward() {
+      setRunning(false);
+      if (state.timelineIndex < state.history.length - 1) {
+        state.timelineIndex += 1;
+        clampTimeline();
+        updateStats();
+        draw();
+      } else {
+        advanceOneRandomStep();
+      }
+    }
+
+    function continueFromCurrentStep() {
+      dropFutureIfNeeded();
+      state.timelineIndex = state.history.length - 1;
+      clampTimeline();
+      updateStats();
+      draw();
+      setRunning(true);
+    }
+
+    function resetSimulation() {
+      state.history = [{
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        angle: 0,
+        turn: null
+      }];
+      state.timelineIndex = 0;
+      accumulator = 0;
+      clampTimeline();
+      setSpeed(8);
+      setRunning(true);
+      updateStats();
+      draw();
+    }
+
+    function tick(now) {
+      const dt = (now - lastFrame) / 1000;
+      lastFrame = now;
+
+      if (running) {
+        accumulator += dt;
+        const stepInterval = 1 / speed;
+        while (accumulator >= stepInterval) {
+          advanceOneRandomStep();
+          accumulator -= stepInterval;
         }
+      }
 
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % titles.length;
-            updateCarousel();
-        }
+      requestAnimationFrame(tick);
+    }
 
-        // Swipe Support
-        let startX = 0;
+    toggleRunBtn.addEventListener('click', () => {
+      setRunning(!running);
+    });
 
-        const carousel = document.getElementById("carousel");
+    continueFromHereBtn.addEventListener('click', continueFromCurrentStep);
+    stepBackBtn.addEventListener('click', stepBack);
+    stepForwardBtn.addEventListener('click', stepForward);
+    resetBtn.addEventListener('click', resetSimulation);
 
-        carousel.addEventListener("touchstart", function(e) {
-            startX = e.touches[0].clientX;
-        });
+    speedInput.addEventListener('input', (event) => {
+      setSpeed(Number(event.target.value));
+      updateStats();
+    });
 
-        carousel.addEventListener("touchend", function(e) {
-            const endX = e.changedTouches[0].clientX;
-            const diff = endX - startX;
+    slowDownBtn.addEventListener('click', () => {
+      setSpeed(speed - 1);
+      updateStats();
+    });
 
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    prevSlide();
-                } else {
-                    nextSlide();
-                }
-            }
-        });
+    speedUpBtn.addEventListener('click', () => {
+      setSpeed(speed + 1);
+      updateStats();
+    });
 
-        // Inicializa
-        updateCarousel();
-    </script>
+    timeInput.addEventListener('input', (event) => {
+      setRunning(false);
+      state.timelineIndex = Number(event.target.value);
+      clampTimeline();
+      updateStats();
+      draw();
+    });
+
+    resetSimulation();
+    requestAnimationFrame((now) => {
+      lastFrame = now;
+      requestAnimationFrame(tick);
+    });
+  </script>
 </body>
 </html>
